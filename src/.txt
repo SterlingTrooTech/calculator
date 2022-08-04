@@ -1,0 +1,434 @@
+/* eslint-disable */
+import React, {useState} from 'react';
+import { Button } from '@mui/material';
+import './calculator.css'
+import evaluate from './evaluate';
+
+const Calculator = () => {
+  const [val, setVal] = useState('0');
+  const [decimal, setDecimal] = useState(false);
+
+  const [calc, setCalc] = useState(0);
+  const [num1, setNum1] = useState(0);
+  const [op, setOp] = useState();
+  const [equal, setEqual] = useState(0)
+
+  const numClick = (e) => {
+    
+    if (val == '0') {
+      setVal(e.target.value)
+      setNum1(e.target.value)
+    } else {
+      setVal(val + (e.target.value))
+      setNum1(num1 + (e.target.value))
+    }
+  }
+
+  const operatorClick = (e) => {
+    if(val == 0)
+    {
+      if(e.target.value == "-" || e.target.value == "+")
+      {
+        setVal(e.target.value)
+      } else {
+        setVal(val + (e.target.value));
+      }
+    } else {
+      setVal(val + (e.target.value))
+    }
+    setDecimal(false)
+    setCalc(num1)
+
+    try{
+
+      setCalc(evaluate(op, calc, num1))
+
+    } finally {
+      setOp(e.target.value)
+      setNum1(0)
+    }
+  }
+
+  const decimalClick = (e) => {
+    setVal(val + e.target.value)
+    setNum1(num1 + e.target.value)
+    setDecimal(true)
+  }
+
+  const clearVals = () => {
+    setVal(0)
+    setCalc(0)
+    setEqual(0)
+    setDecimal(false)
+  }
+
+  const deleteVals = () => {
+    if(val === 0 || val.length <= 1){
+      setVal(0)
+    } else {
+      if(isNaN(val?.charAt(val?.length - 1))){
+        setVal(val?.substring(0, val?.length - 1))
+        setDecimal(false)
+      } else {
+        setVal(val?.substring(0, val?.length - 1))
+      }
+    }
+    let c = calc.toString()
+    if(c === 0 || c.length <= 1){
+      setCalc(0)
+      setEqual(0)
+    } else {
+      if(isNaN(c?.charAt(c?.length - 1))){
+        setCalc(parseInt(c?.substring(0, c?.length - 1)))
+        setDecimal(false)
+      } else {
+        setCalc(parseInt(c?.substring(0, c?.length - 1)))
+      }
+    }
+  }
+
+  const calculate = () => {
+    setNum1(evaluate(op, calc, num1))
+    setCalc(evaluate(op, calc, num1))
+    setVal((eval(val)).toString())
+    setEqual(1)
+    setOp()
+    setDecimal(false)
+  }
+
+  return(
+    <>
+      <div className='wrapper'>
+        <table className='numPad'>
+          <thead>
+            <tr>
+              <td colSpan={4}>
+                <div className='display'>{val}</div>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <Button variant="outlined" onClick={(e) => clearVals(e)} color="error">AC</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => deleteVals(e)} color="error">⇐</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => operatorClick(e)} value="/" >/</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => operatorClick(e)} value="*" >*</Button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Button variant="outlined" onClick={(e) => numClick(e)} value="7" >7</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => numClick(e)} value="8" >8</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => numClick(e)} value="9" >9</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => operatorClick(e)} value="%" >%</Button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Button variant="outlined" onClick={(e) => numClick(e)} value="4" >4</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => numClick(e)} value="5" >5</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => numClick(e)} value="6" >6</Button>
+              </td>
+              <td>
+              <Button variant="outlined" onClick={(e) => operatorClick(e)} value="-" >-</Button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              <Button variant="outlined" onClick={(e) => numClick(e)} value="1" >1</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => numClick(e)} value="2" >2</Button>
+              </td>
+              <td>
+              <Button variant="outlined" onClick={(e) => numClick(e)} value="3" >3</Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={(e) => operatorClick(e)} value="+" >+</Button>
+              </td>
+            </tr>
+            <tr>
+              <td colSpan={2}>
+                <Button 
+                  style={{minWidth: '147px'}} 
+                  variant="outlined" 
+                  onClick={(e) => numClick(e)} 
+                  value="0" 
+                >
+                  0
+                </Button>
+              </td>
+              <td>
+                <Button 
+                  variant="outlined" 
+                  onClick={(e) => decimalClick(e)} 
+                  disabled={decimal} 
+                  value="." 
+                >
+                  .
+                </Button>
+              </td>
+              <td>
+                <Button variant="outlined" onClick={() => calculate()} >=</Button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      {equal? <div className='display2'>{calc}</div>: <></>}
+    </>
+  )
+}
+
+export default Calculator;
+
+// 200 LOC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* eslint-disable */
+import React, {useState} from 'react';
+import './calculator.css'
+import evaluate from './evaluate';
+import { CalcUi } from './numPad';
+
+const Calculator = () => {
+  const [val, setVal] = useState('0');
+  const [decimal, setDecimal] = useState(false);
+
+  const [calc, setCalc] = useState(0);
+  const [num1, setNum1] = useState(0);
+  const [op, setOp] = useState();
+  const [equal, setEqual] = useState(0)
+
+  const numClick = (e) => {
+    
+    if (val == '0') {
+      setVal(e.target.value)
+      setNum1(e.target.value)
+    } else {
+      setVal(val + (e.target.value))
+      setNum1(num1 + (e.target.value))
+    }
+  }
+
+  const operatorClick = (e) => {
+    if(val == 0)
+    {
+      if(e.target.value == "-" || e.target.value == "+")
+      {
+        setVal(e.target.value)
+      } else {
+        setVal(val + (e.target.value));
+      }
+    } else {
+      setVal(val + (e.target.value))
+    }
+    setDecimal(false)
+    setCalc(num1)
+
+    try{
+
+      setCalc(evaluate(op, calc, num1))
+
+    } finally {
+      setOp(e.target.value)
+      setNum1(0)
+    }
+  }
+
+  const decimalClick = (e) => {
+    setVal(val + e.target.value)
+    setNum1(num1 + e.target.value)
+    setDecimal(true)
+  }
+
+  const clearVals = () => {
+    setVal(0)
+    setCalc(0)
+    setEqual(0)
+    setDecimal(false)
+  }
+
+  const deleteVals = () => {
+    if(val === 0 || val.length <= 1){
+      setVal(0)
+    } else {
+      if(isNaN(val?.charAt(val?.length - 1))){
+        setVal(val?.substring(0, val?.length - 1))
+        setDecimal(false)
+      } else {
+        setVal(val?.substring(0, val?.length - 1))
+      }
+    }
+    let c = calc.toString()
+    if(c === 0 || c.length <= 1){
+      setCalc(0)
+      setEqual(0)
+    } else {
+      if(isNaN(c?.charAt(c?.length - 1))){
+        setCalc(parseInt(c?.substring(0, c?.length - 1)))
+        setDecimal(false)
+      } else {
+        setCalc(parseInt(c?.substring(0, c?.length - 1)))
+      }
+    }
+  }
+
+  const calculate = () => {
+    setNum1(evaluate(op, calc, num1))
+    setCalc(evaluate(op, calc, num1))
+    setVal((eval(val)).toString())
+    setEqual(1)
+    setOp()
+    setDecimal(false)
+  }
+
+  return(
+    <>
+      <CalcUi
+        numClick = {(e) => numClick(e)}
+        operatorClick = {(e) => operatorClick(e)}
+        decimalClick = {(e) => decimalClick(e)}
+        clearVals = {() => clearVals()}
+        deleteVals = {() => deleteVals()}
+        calculate = {() => calculate()}
+        decimal = {decimal}
+        val = {val}
+      />
+      {equal? <div className='display2'>{calc}</div>: <></>}
+    </>
+  )
+}
+
+export default Calculator;
+
+// 116 LOC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* eslint-disable */
+import React, {useState} from 'react';
+import './calculator.css'
+import { CalcUi } from './numPad';
+
+const Calculator = () => {
+  const [val, setVal] = useState('0');
+  const [decimal, setDecimal] = useState(false);
+
+  const numClick = (e) => {
+    
+    if (val == '0') {
+      setVal(e.target.value)
+    } else {
+      setVal(val + (e.target.value))
+    }
+  }
+
+  const operatorClick = (e) => {
+    if(val == 0)
+    {
+      if(e.target.value == "-" || e.target.value == "+")
+      {
+        setVal(e.target.value)
+      } else {
+        setVal(val + (e.target.value));
+      }
+    } else {
+      setVal(val + (e.target.value))
+    }
+    setDecimal(false)
+  }
+
+  const decimalClick = (e) => {
+    setVal(val + e.target.value)
+    setDecimal(true)
+  }
+
+  const clearVals = () => {
+    setVal(0)
+    setDecimal(false)
+  }
+
+  const deleteVals = () => {
+    if(val === 0 || val.length <= 1){
+      setVal(0)
+    } else {
+      if(isNaN(val?.charAt(val?.length - 1))){
+        setVal(val?.substring(0, val?.length - 1))
+        setDecimal(false)
+      } else {
+        setVal(val?.substring(0, val?.length - 1))
+      }
+    }
+  }
+
+  const calculate = () => {
+    setVal((eval(val)).toString())
+    setDecimal(false)
+  }
+
+  return(
+    <>
+      <CalcUi
+        numClick = {(e) => numClick(e)}
+        operatorClick = {(e) => operatorClick(e)}
+        decimalClick = {(e) => decimalClick(e)}
+        clearVals = {() => clearVals()}
+        deleteVals = {() => deleteVals()}
+        calculate = {() => calculate()}
+        decimal = {decimal}
+        val = {val}
+      />
+    </>
+  )
+}
+
+export default Calculator;
+
+// 78 LOC
