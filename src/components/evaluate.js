@@ -21,3 +21,4 @@ const evaluate = (op, calc, num1) => {
 }
 
 export default evaluate;
+//git test 2

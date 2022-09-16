@@ -76,6 +76,4 @@ const Calculator = () => {
 }
 
 export default Calculator;
-//comment
-// git commit -a -m "commit" (do not need commit message either)
-// git push
+//git test 2
